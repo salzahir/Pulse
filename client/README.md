@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pulse Client 💬
+
+The frontend for Pulse - a real-time messaging application built with Next.js 15 and React 19.
+
+## Features
+
+- **Real-time chat interface** - Live messaging with instant updates
+- **Responsive design** - Works seamlessly on desktop and mobile
+- **Modern UI** - Clean, intuitive interface built with Tailwind CSS
+- **Type-safe** - Full TypeScript integration
+- **Fast performance** - Optimized with Next.js App Router
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
 
+### Installation
+
+1. **Install dependencies**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Set up environment variables**
+```bash
+cp .env.local.example .env.local
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Update `.env.local` with your API URL:
+```env
+NEXT_PUBLIC_API_URL="http://localhost:5000"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Start development server**
+```bash
+npm run dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-To learn more about Next.js, take a look at the following resources:
+## Available Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev         # Start development server
+npm run build       # Build for production
+npm run start       # Start production server
+npm run lint        # Run ESLint
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
+
+- **Next.js 15** - React framework with App Router
+- **React 19** - UI library with modern features
+- **TypeScript** - Type safety and developer experience
+- **Tailwind CSS** - Utility-first CSS framework
+- **ESLint** - Code linting and formatting
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── globals.css      # Global styles
+│   ├── layout.tsx       # Root layout component
+│   └── page.tsx         # Home page
+├── components/          # Reusable UI components
+├── hooks/              # Custom React hooks
+├── lib/
+│   ├── api.ts          # API utilities
+│   └── utils.ts        # Helper functions
+└── types/
+    └── index.ts        # TypeScript type definitions
+```
+
+## Building Features
+
+This client is set up to easily integrate with real-time messaging features:
+
+- API hooks for data fetching
+- Type definitions for messaging data
+- Utility functions for common operations
+- Component structure ready for chat UI
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy is using [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push your code to GitHub
+2. Import your repository to Vercel
+3. Set your environment variables
+4. Deploy!
+
+---
+
+Part of the **Pulse** messaging application.

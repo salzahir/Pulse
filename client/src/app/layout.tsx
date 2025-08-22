@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MERN Template",
-  description: "A clean boilerplate for MERN stack applications",
+  title: "Pulse",
+  description: "Real-time messaging app - Connect and chat instantly",
 };
 
 export default function RootLayout({

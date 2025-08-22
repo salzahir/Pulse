@@ -3,17 +3,17 @@ export default function Home() {
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          MERN Template
+          Pulse 💬
         </h1>
         <p className="text-lg text-gray-600 mb-8">
-          A clean boilerplate for MERN stack applications
+          Real-time messaging made simple
         </p>
         <div className="flex gap-4 justify-center">
           <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
-            Get Started
+            Start Chatting
           </button>
           <button className="border border-gray-300 hover:border-gray-400 text-gray-700 px-6 py-2 rounded-lg transition-colors">
-            Learn More
+            Sign In
           </button>
         </div>
       </div>

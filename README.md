@@ -1,22 +1,40 @@
-# MERN Template 🚀
+# Pulse 💬
 
-A clean, minimal boilerplate for MERN stack applications with TypeScript, modern tooling, and best practices.
+A real-time messaging application built from scratch with modern web technologies. Connect, chat, and stay in touch with friends through instant messaging, group chats, and more.
+
+## ✨ Features
+
+### Core Functionality
+- **Real-time messaging** - Instant message delivery with live updates
+- **User authentication** - Secure registration and login system
+- **User profiles** - Customizable profiles with avatars and status
+- **Direct messaging** - One-on-one conversations
+- **Group chats** - Create and manage group conversations
+- **Friend system** - Send and accept friend requests
+- **Online status** - See who's currently online
+- **Message history** - Persistent chat history
+
+### Planned Features
+- **File sharing** - Send images and documents
+- **Typing indicators** - See when someone is typing
+- **Message reactions** - React to messages with emojis
+- **Push notifications** - Get notified of new messages
 
 ## 🛠 Tech Stack
 
 ### Frontend
 - **Next.js 15** - React framework with App Router
-- **React 18** - UI library with modern hooks
+- **React 19** - UI library with modern hooks
 - **TypeScript** - Type safety and better DX
 - **Tailwind CSS** - Utility-first CSS framework
-- **ESLint** - Code linting and formatting
+- **Supabase** - Real-time subscriptions and database
 
 ### Backend
 - **Node.js** - Runtime environment
 - **Express** - Web application framework
 - **TypeScript** - Full-stack type safety
 - **Prisma ORM** - Type-safe database toolkit
-- **PostgreSQL** - Relational database
+- **PostgreSQL** - Relational database (via Supabase)
 - **JWT** - Authentication tokens
 - **bcryptjs** - Password hashing
 - **Jest** - Testing framework
@@ -24,7 +42,7 @@ A clean, minimal boilerplate for MERN stack applications with TypeScript, modern
 ## 📁 Project Structure
 
 ```
-mern-template/
+Pulse/
 ├── client/                    # Next.js frontend
 │   ├── src/
 │   │   ├── app/
@@ -33,14 +51,11 @@ mern-template/
 │   │   │   └── page.tsx       # Home page
 │   │   ├── components/        # Reusable UI components
 │   │   ├── hooks/             # Custom React hooks
-│   │   │   ├── useApi.ts      # API request hook with loading/error states
-│   │   │   └── examples.ts    # Usage examples for hooks
 │   │   ├── lib/
-│   │   │   ├── api.ts         # API client utilities & getApiUrl function
+│   │   │   ├── api.ts         # API client utilities
 │   │   │   └── utils.ts       # Common utility functions
 │   │   └── types/
 │   │       └── index.ts       # TypeScript type definitions
-│   ├── public/                # Static assets
 │   └── package.json
 │
 └── server/                    # Express backend
@@ -51,16 +66,12 @@ mern-template/
     │   ├── models/           # Data models
     │   ├── routes/           # API route definitions
     │   ├── test/             # Test files
-    │   │   ├── setup.ts      # Test configuration
-    │   │   └── app.test.ts   # Basic API tests
     │   ├── utils/
     │   │   ├── logger.ts     # Logging utility
-    │   │   └── validation.ts # Zod validation schemas
+    │   │   └── hash.ts       # Password hashing
     │   └── app.ts            # Express application
     ├── prisma/
     │   └── schema.prisma     # Database schema
-    ├── jest.config.js        # Jest configuration
-    ├── tsconfig.json         # TypeScript configuration
     └── package.json
 ```
 
@@ -68,15 +79,15 @@ mern-template/
 
 ### Prerequisites
 - **Node.js** (v18 or higher)
-- **PostgreSQL** (v12 or higher)
 - **npm** or **yarn**
+- **Supabase account** (for database and real-time features)
 
 ### Installation
 
-1. **Clone or download this template**
+1. **Clone the repository**
 ```bash
 git clone <your-repo-url>
-cd mern-template
+cd Pulse
 ```
 
 2. **Install server dependencies**
@@ -99,37 +110,36 @@ cd server
 cp .env.example .env
 ```
 
-2. **Update the `.env` file with your configuration:**
+2. **Set up Supabase:**
+   - Create a new project at [supabase.com](https://supabase.com)
+   - Get your database URL from Project Settings > Database
+   - Update your `.env` file:
+
 ```env
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/your_database"
+# Database (Supabase)
+DATABASE_URL="postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres"
 
 # JWT
-JWT_SECRET="your-super-secret-jwt-key-here"
+JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
 JWT_EXPIRES_IN="7d"
 
 # Server
-PORT=3001
+PORT=5000
 NODE_ENV="development"
 
 # CORS
-CORS_ORIGIN="http://localhost:3000"
+CLIENT_URL="http://localhost:3000"
 ```
 
-3. **Create client environment file (optional)**
+3. **Create client environment file**
 ```bash
 cd ../client
-echo "NEXT_PUBLIC_API_URL=http://localhost:3001" > .env.local
+cp .env.local.example .env.local
 ```
 
 ### Database Setup
 
-1. **Create your PostgreSQL database**
-```bash
-createdb your_database_name
-```
-
-2. **Run Prisma migrations**
+1. **Run Prisma migrations**
 ```bash
 cd server
 npx prisma migrate dev
@@ -152,7 +162,7 @@ npm run dev
 
 3. **Open your browser**
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:3001
+- Backend API: http://localhost:5000
 
 ## 📋 Available Scripts
 
@@ -177,9 +187,24 @@ npm run start       # Start production server
 npm run lint        # Run ESLint
 ```
 
-## 🧪 Testing
+## 🗄️ Database Schema
 
-The server includes a comprehensive testing setup with Jest and Supertest:
+The app uses a robust database schema designed for messaging:
+
+- **Users** - Authentication, profiles, online status
+- **Conversations** - Direct messages and group chats
+- **Messages** - Chat messages with different types (text, image, file)
+- **Friendships** - Friend requests and connections
+- **ConversationParticipants** - Many-to-many relationship for group chats
+
+## 🔐 Authentication
+
+- JWT-based authentication
+- Secure password hashing with bcryptjs
+- HTTP-only cookies for token storage
+- Protected routes and middleware
+
+## 🧪 Testing
 
 ```bash
 cd server
@@ -188,177 +213,14 @@ npm run test:watch  # Run tests in watch mode
 npm run test:coverage  # Generate coverage report
 ```
 
-## 🔧 Key Features
-
-### Server Features
-- **Express** with TypeScript setup
-- **Prisma ORM** with PostgreSQL
-- **JWT Authentication** ready to implement
-- **Request validation** with Zod
-- **Security middleware** (Helmet, CORS, Rate limiting)
-- **Logging utility** for better debugging
-- **Testing setup** with Jest and Supertest
-- **Development tools** (nodemon, ts-node)
-
-### Client Features
-- **Next.js 15** with App Router
-- **TypeScript** configuration
-- **Tailwind CSS** for styling
-- **useApi hook** with automatic loading/error states and network detection
-- **API client** utility for legacy/traditional approach
-- **Custom hooks** directory with examples
-- **Type definitions** for common data structures
-- **Utility functions** (cn, formatDate, debounce, etc.)
-- **ESLint** configuration
-
-## 📝 Usage Examples
-
-### Adding a New API Route
-
-1. **Create a controller** (`server/src/controllers/userController.ts`):
-```typescript
-import { Request, Response } from 'express';
-
-export const getUsers = async (req: Request, res: Response) => {
-  try {
-    // Your logic here
-    res.json({ message: 'Users retrieved successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get users' });
-  }
-};
-```
-
-2. **Create a route** (`server/src/routes/userRoutes.ts`):
-```typescript
-import express from 'express';
-import { getUsers } from '../controllers/userController';
-
-const router = express.Router();
-router.get('/', getUsers);
-
-export default router;
-```
-
-3. **Register the route** in `server/src/app.ts`:
-```typescript
-import userRoutes from './routes/userRoutes';
-app.use('/api/users', userRoutes);
-```
-
-### Using the API Hooks (Recommended)
-
-The template includes a powerful `useApi` hook that provides automatic loading states, error handling, and network detection:
-
-```typescript
-import useApi from '@/hooks/useApi';
-import { useState, useEffect } from 'react';
-
-function UsersList() {
-  const { fetchData, loading, error, isApiDown } = useApi('GET');
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const loadUsers = async () => {
-      const data = await fetchData('/api/users');
-      if (data) setUsers(data);
-    };
-    loadUsers();
-  }, [fetchData]);
-
-  if (loading) return <div>Loading...</div>;
-  if (isApiDown) return <div>Server is down. Please check if the API is running.</div>;
-  if (error) return <div>Error: {error}</div>;
-
-  return (
-    <ul>
-      {users.map(user => (
-        <li key={user.id}>{user.name}</li>
-      ))}
-    </ul>
-  );
-}
-
-// For POST requests
-function CreateUser() {
-  const { fetchData, loading, error } = useApi('POST');
-
-  const handleCreate = async (userData) => {
-    const result = await fetchData('/api/users', userData);
-    if (result) {
-      console.log('User created:', result);
-    }
-  };
-
-  return (
-    <button onClick={() => handleCreate({name: 'John', email: 'john@example.com'})} disabled={loading}>
-      {loading ? 'Creating...' : 'Create User'}
-    </button>
-  );
-}
-```
-
-### Using the Legacy API Client
-
-You can also use the traditional API client approach:
-
-```typescript
-import { apiClient } from '@/lib/api';
-
-// In your React component or hook
-const fetchUsers = async () => {
-  const { data, error } = await apiClient.get('/api/users');
-  if (error) {
-    console.error('Failed to fetch users:', error);
-    return;
-  }
-  // Handle successful response
-  setUsers(data);
-};
-```
-
-## 🔐 Authentication Setup
-
-The template includes JWT authentication utilities. To implement auth:
-
-1. **Create auth routes** using the validation schemas
-2. **Use bcryptjs** to hash passwords
-3. **Generate JWT tokens** for authenticated users
-4. **Protect routes** with authentication middleware
-
-## 🗄️ Database Models
-
-Extend the Prisma schema in `server/prisma/schema.prisma`:
-
-```prisma
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("posts")
-}
-```
-
-Then run migrations:
-```bash
-npx prisma migrate dev
-npx prisma generate
-```
-
 ## 🚢 Deployment
 
-### Server Deployment
+### Backend
 1. Build the TypeScript code: `npm run build`
 2. Set environment variables for production
-3. Deploy the `dist` folder and run `npm start`
+3. Deploy to your preferred platform (Railway, Render, etc.)
 
-### Client Deployment
+### Frontend
 1. Build the Next.js app: `npm run build`
 2. Deploy to Vercel, Netlify, or your preferred platform
 
@@ -374,13 +236,6 @@ npx prisma generate
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🛟 Support
-
-If you encounter any issues or have questions, please:
-1. Check the existing issues
-2. Create a new issue with detailed information
-3. Provide steps to reproduce any bugs
-
 ---
 
-**Happy coding! 🎉**
+**Happy chatting! 💬**
