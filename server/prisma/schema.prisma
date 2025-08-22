@@ -11,27 +11,104 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  password  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  username    String  @unique
+  password    String
+  avatar      String?  // URL to profile picture
+  bio         String?  // User bio/status
+  isOnline    Boolean  @default(false)
+  lastSeen    DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  sentMessages      Message[]      @relation("SentMessages")
+  receivedMessages  Message[]      @relation("ReceivedMessages")
+  conversations     ConversationParticipant[]
+  sentFriendRequests    Friendship[] @relation("FriendRequester")
+  receivedFriendRequests Friendship[] @relation("FriendRequestee")
 
   @@map("users")
 }
 
-// Add more models as needed
-// Example:
-// model Post {
-//   id        String   @id @default(cuid())
-//   title     String
-//   content   String?
-//   published Boolean  @default(false)
-//   authorId  String
-//   author    User     @relation(fields: [authorId], references: [id])
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//
-//   @@map("posts")
-// } 
+model Conversation {
+  id          String   @id @default(cuid())
+  name        String?  // For group chats
+  isGroup     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id             String   @id @default(cuid())
+  userId         String
+  conversationId String
+  joinedAt       DateTime @default(now())
+  leftAt         DateTime?
+  isAdmin        Boolean  @default(false) // For group chats
+
+  // Relations
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conversationId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  content        String
+  messageType    MessageType @default(TEXT)
+  imageUrl       String?  // For image messages
+  senderId       String
+  receiverId     String?  // For direct messages
+  conversationId String
+  isRead         Boolean  @default(false)
+  isEdited       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  sender       User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver     User?        @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: SetNull)
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model Friendship {
+  id          String      @id @default(cuid())
+  requesterId String
+  requesteeId String
+  status      FriendshipStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  requester User @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requestee User @relation("FriendRequestee", fields: [requesteeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, requesteeId])
+  @@map("friendships")
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  BLOCKED
+} 
