@@ -30,6 +30,7 @@ model User {
   sentFriendRequests    Friendship[] @relation("FriendRequester")
   receivedFriendRequests Friendship[] @relation("FriendRequestee")
 
+  @@index([isOnline])
   @@map("users")
 }
 
@@ -81,6 +82,8 @@ model Message {
   receiver     User?        @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: SetNull)
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
+  @@index([conversationId])
+  @@index([createdAt])
   @@map("messages")
 }
 
@@ -97,6 +100,7 @@ model Friendship {
   requestee User @relation("FriendRequestee", fields: [requesteeId], references: [id], onDelete: Cascade)
 
   @@unique([requesterId, requesteeId])
+  @@index([status])
   @@map("friendships")
 }
 
@@ -111,4 +115,4 @@ enum FriendshipStatus {
   ACCEPTED
   DECLINED
   BLOCKED
-} 
+}
