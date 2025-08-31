@@ -13,7 +13,7 @@ declare global {
     }
 }
 
-function generateToken(userId: string): string {
+export const generateToken = (userId: string): string => {
     const secret = process.env.JWT_SECRET;
     if (!secret) {
         throw new Error("JWT_SECRET environment variable is required");
@@ -22,11 +22,11 @@ function generateToken(userId: string): string {
     return jwt.sign(
         { id: userId }, 
         secret, 
-        { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as any }
+        { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as string } as SignOptions
     );
 }
 
-function authenticateToken(req: Request, res: Response, next: NextFunction): void {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
     
     if (!token) {
@@ -53,5 +53,3 @@ function authenticateToken(req: Request, res: Response, next: NextFunction): voi
         return;
     }
 }
-
-export { generateToken, authenticateToken };

@@ -6,7 +6,9 @@ import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import * as statusController from './controllers/statusController';
+
 import statusRouter from './routes/statusRoutes';
+import messageRouter from './routes/messageRouter';
 
 dotenv.config();
 
@@ -19,19 +21,20 @@ const limiter = rateLimit({
 });
 
 // Middleware
-app.use(helmet()); // Security headers
-app.use(compression()); // Compress responses
-app.use(limiter); // Apply rate limiting
+app.use(helmet());
+app.use(compression());
+app.use(limiter);
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true,
 }));
-app.use(cookieParser()); // Parse cookies
+app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
 app.use("/", statusRouter)
+app.use("/messages", messageRouter);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: any) => {
