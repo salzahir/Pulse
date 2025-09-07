@@ -5,32 +5,47 @@ import { saveMessage } from './db/messageDb';
 
 export const wss = new WebSocketServer({ noServer: true });
 
-export const setupWebSocket = () => {
-  wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
-    console.log('New WebSocket client connected');
+const _logMessage = async (ws: WebSocket, msg: Buffer, userID: string) => {
 
-    ws.on('message', async (msg: Buffer) => {
-      const timeStamp = Date.now();
-      console.log('Message received:', msg.toString(), timeStamp.toString());
-      const message = msg.toString();
-      const savedMessage = await saveMessage(
-        message,
-        'test-user-id',
-        'fake-conversation-id',
-        timeStamp
-      );
-      console.log('Message saved to database' + savedMessage);
-      ws.send(`Server received: ${msg}`);
-    });
+  const timeStamp = Date.now();
+  console.log('Message received:', msg.toString(), timeStamp.toString());
+  const message = msg.toString();
+  const receiverID = userID === "Dexter Morgan" ? "Arthur Mitchell" : "Dexter Morgan";
+  const savedMessage = await saveMessage(
+    message,
+    userID,
+    'fake-conversation-id',
+    timeStamp,
+    receiverID,
+  );
+  console.log('Message saved to database' + savedMessage);
+  ws.send(`Server received: ${msg}`);
 
-    ws.on('error', (err: Error) => {
-      console.error('WebSocket error:', err);
-    });
-
-    ws.on('close', () => {
-      console.log('Client disconnected');
-    });
-
-    ws.send('Welcome to Pulse WebSocket!');
+  wss.clients.forEach(client => {
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(savedMessage));
+    }
   });
+}
+
+const _handleConnection = (ws: WebSocket, req: IncomingMessage) => {
+
+  const userID = req.headers["authorization"] || "unknown-user";
+  ws.send(`${userID} joined the chat`);
+
+  ws.on('message', (msg: Buffer) => _logMessage(ws, msg, userID));
+
+  ws.on('error', (err: Error) => {
+    console.error('WebSocket error:', err);
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
+
+  ws.send('Welcome to Pulse WebSocket!');
+}
+
+export const setupWebSocket = () => {
+  wss.on('connection', _handleConnection);
 }
