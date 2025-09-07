@@ -11,6 +11,24 @@ export const handleGetMessages = async (req: Request, res: Response) => {
     }
 };
 
+export const handleGetMessageId = async (req: Request, res: Response) => {
+    const messageId = req.params.id;
+    try {
+        const messages = await messageDB.getMessagesByConversationId(messageId);
+        if (!messages) {
+            res.status(404).json({ message: 'Messages not found' });
+            return;
+        }
+        res.status(200).json({
+            messageId: messageId,
+            messages
+        });
+    } catch (error) {
+        console.error('Error fetching message by ID:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 // export const saveMessage = async (message: string, userId: string, timeStamp: number) => {
 //   return messageDB.saveMessage(message, userId, timeStamp, userId);
 // }

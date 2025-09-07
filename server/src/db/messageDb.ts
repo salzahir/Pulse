@@ -31,3 +31,15 @@ export const saveMessage = async(
 export const getMessages = async() => {
     return await prisma.message.findMany();
 }
+
+export const getMessagesByConversationId = async(conversationId: string) => {
+    return await prisma.message.findMany({
+        where: {
+            conversationId: conversationId
+        },
+        orderBy: {
+            createdAt: 'asc'
+        }
+    });
+}
+
