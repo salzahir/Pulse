@@ -13,7 +13,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "tsx prisma/seed.ts"
+    "prisma:seed": "tsx prisma/seed.ts",
+    "lint": "eslint src --ext .ts,.tsx,.js,.jsx"
   },
   "keywords": [
     "messaging",
@@ -41,6 +42,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.35.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.17",
@@ -50,7 +52,13 @@
     "@types/node": "^20.9.0",
     "@types/supertest": "^2.0.16",
     "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "eslint": "^9.35.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.3.0",
     "jest": "^29.7.0",
+    "jiti": "^2.5.1",
     "nodemon": "^3.0.1",
     "prisma": "^5.6.0",
     "supertest": "^6.3.3",
@@ -58,6 +66,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.1.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.42.0"
   }
 }
